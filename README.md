@@ -19,9 +19,9 @@ anyone can contribute to this project. just fork it and make a pull request. i w
 - [x] basic hand scoring
 - [x] basic card discarding
 - [x] basic discard logic
+- [x] add a score counter
 
 ## todo
-- [ ] add a score counter
 - [ ] add a multiplier system
 - [ ] add currency
 - [ ] add a shop

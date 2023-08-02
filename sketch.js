@@ -6,6 +6,11 @@ let submitButton;
 let submittedHand = [];
 let discardCount = 3;
 let resultText = "";
+let scoreButton;
+let scoreCounter = 0;
+let scoreboard = false;
+let scoreBoard;
+let scoreBoardText;
 
 function setup() {
     createCanvas(600, 400);
@@ -22,6 +27,11 @@ function setup() {
     submitButton = createButton("Submit Hand");
     submitButton.position(10, 40);
     submitButton.mousePressed(submitHand);
+
+    // Create the scoreboard button
+    scoreButton = createButton("Scoreboard");
+    scoreButton.position(400, 10);
+    scoreButton.mousePressed(toggleScoreboard);
 }
 
 function dealCards() {
@@ -67,6 +77,12 @@ function draw() {
     textAlign(CENTER, CENTER);
     text(resultText, width / 2, height - 50);
 
+    // Display the score on the screen
+    textSize(24);
+    fill(100);
+    textAlign(CENTER, CENTER);
+    text("Score: " + scoreCounter, width / 2, height - 20);
+
     // Display the player's hand
     const cardWidth = 100;
     const cardHeight = 150;
@@ -97,6 +113,35 @@ function replaceSelectedCards() {
     discardCount--;
 }
 
+function toggleScoreboard() {
+    if (scoreboard == true) {
+        // remove div
+        scoreBoard.remove();
+        scoreboard = false;
+    } else {
+        // create a scoreboard
+        scoreBoard = createDiv('Scoreboard');
+        scoreBoard.position(100, 10);
+        scoreBoard.size(200, 200);
+        scoreBoard.style('background-color', 'white');
+        scoreboard = true;
+
+        // show scores for all hands and the amount of times the hand was dealt
+        const scoreText = `
+            Straight Flush: ${scoreCounter} x ${scoreBoard['Straight Flush'] || 0} <br>
+            Four of a Kind: ${scoreCounter} x ${scoreBoard['Four of a Kind'] || 0} <br>
+            Full House: ${scoreCounter} x ${scoreBoard['Full House'] || 0} <br>
+            Flush: ${scoreCounter} x ${scoreBoard['Flush'] || 0} <br>
+            Straight: ${scoreCounter} x ${scoreBoard['Straight'] || 0} <br>
+            Three of a Kind: ${scoreCounter} x ${scoreBoard['Three of a Kind'] || 0} <br>
+            Two Pairs: ${scoreCounter} x ${scoreBoard['Two Pairs'] || 0} <br>
+            One Pair: ${scoreCounter} x ${scoreBoard['One Pair'] || 0} <br>
+            High Card: ${scoreCounter} x ${scoreBoard['High Card'] || 0}
+        `;
+        scoreBoard.html(scoreText);
+    }
+}
+
 
 function submitHand() {
     submittedHand = [];
@@ -119,6 +164,9 @@ function submitHand() {
     const result = evaluateHand(submittedHand);
     resultText = "Hand: " + result;
     console.log("Hand Evaluation Result:", result);
+
+    const handValue = calculateHandValue(result);
+    scoreCounter += handValue;
 
     // Reset the discard count
     discardCount = 3;
@@ -153,6 +201,30 @@ function evaluateHand(hand) {
         return "One Pair";
     } else {
         return "High Card";
+    }
+}
+
+function calculateHandValue(handResult) {
+    // Assign a value to each poker hand
+    switch (handResult) {
+        case "Straight Flush":
+            return 500;
+        case "Four of a Kind":
+            return 250;
+        case "Full House":
+            return 90;
+        case "Flush":
+            return 60;
+        case "Straight":
+            return 40;
+        case "Three of a Kind":
+            return 30;
+        case "Two Pairs":
+            return 20;
+        case "One Pair":
+            return 5;
+        default:
+            return 0;
     }
 }
 
