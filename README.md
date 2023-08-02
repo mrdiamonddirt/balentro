@@ -20,8 +20,7 @@ anyone can contribute to this project. just fork it and make a pull request. i w
 - [x] basic card discarding
 
 ## todo
-- [ ] sort out selection spacing you can currently select two cards at once
 - [ ] add a score counter
-- [ ] add a multiplier sysetm
+- [ ] add a multiplier system
 - [ ] add currency
 - [ ] add a shop

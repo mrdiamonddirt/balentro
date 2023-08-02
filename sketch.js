@@ -37,7 +37,8 @@ function mouseClicked() {
     const startX = (width - (playerHand.length * cardWidth + (playerHand.length - 1) * spacing)) / 2;
     const startY = height / 2 - cardHeight / 2;
 
-    for (let i = 0; i < playerHand.length; i++) {
+    // Loop through the cards in reverse order (from top to bottom)
+    for (let i = playerHand.length - 1; i >= 0; i--) {
         const card = playerHand[i];
         const xOffset = startX + i * (cardWidth + spacing);
         const yOffset = startY;
@@ -46,6 +47,7 @@ function mouseClicked() {
         if (mouseX >= xOffset && mouseX <= xOffset + cardWidth &&
             mouseY >= yOffset && mouseY <= yOffset + cardHeight) {
             card.selected = !card.selected; // Toggle card selection
+            return; // Return immediately after selecting the topmost card
         }
     }
 }
