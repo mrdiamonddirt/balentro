@@ -18,6 +18,7 @@ anyone can contribute to this project. just fork it and make a pull request. i w
 - [x] basic card selection
 - [x] basic hand scoring
 - [x] basic card discarding
+- [x] basic discard logic
 
 ## todo
 - [ ] add a score counter

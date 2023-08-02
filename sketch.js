@@ -84,6 +84,9 @@ function draw() {
 }
 
 function replaceSelectedCards() {
+    if (discardCount <= 0) {
+        return;
+    }
     for (let i = playerHand.length - 1; i >= 0; i--) {
         const card = playerHand[i];
         if (card.selected) {
@@ -91,6 +94,7 @@ function replaceSelectedCards() {
             card.selected = false; // Deselect the replaced card
         }
     }
+    discardCount--;
 }
 
 
