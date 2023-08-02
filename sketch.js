@@ -182,8 +182,10 @@ function evaluateHand(hand) {
     // Sort the hand by card value (assuming the Card class has a numeric 'value' property)
     hand.sort((a, b) => a.value - b.value);
 
-    // Check for different poker hands
-    if (isStraightFlush(hand)) {
+    // Check for royal flush
+    if (isRoyalFlush(hand)) {
+        return "Royal Flush";
+    } else if (isStraightFlush(hand)) {
         return "Straight Flush";
     } else if (isFourOfAKind(hand)) {
         return "Four of a Kind";
@@ -207,6 +209,8 @@ function evaluateHand(hand) {
 function calculateHandValue(handResult) {
     // Assign a value to each poker hand
     switch (handResult) {
+        case "Royal Flush":
+            return 2500;
         case "Straight Flush":
             return 500;
         case "Four of a Kind":
@@ -222,13 +226,21 @@ function calculateHandValue(handResult) {
         case "Two Pairs":
             return 20;
         case "One Pair":
-            return 5;
+            return 10;
         default:
             return 0;
     }
 }
 
 // Implement helper functions for each poker hand check
+
+function isRoyalFlush(hand) {
+    // Check if the hand is a royal flush (A, K, Q, J, 10 of the same suit)
+    const royalFlushValues = [10, 11, 12, 13, 14];
+    const handValues = hand.map(card => card.value);
+    return isStraightFlush(hand) && handValues.every(value => royalFlushValues.includes(value));
+}
+
 function isStraightFlush(hand) {
     return isStraight(hand) && isFlush(hand);
 }

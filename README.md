@@ -22,6 +22,7 @@ anyone can contribute to this project. just fork it and make a pull request. i w
 - [x] add a score counter
 
 ## todo
+- [ ] fix straight flushes and royal flushes scoring
 - [ ] add a multiplier system
 - [ ] add currency
 - [ ] add a shop
