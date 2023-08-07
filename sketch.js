@@ -4,7 +4,7 @@ let selectedCards = [];
 let replaceButton;
 let submitButton;
 let submittedHand = [];
-let discardCount = 3;
+let discardCount = 10;
 let resultText = "";
 let scoreButton;
 let scoreCounter = 0;
@@ -69,7 +69,7 @@ function draw() {
 
     fill(100);
     textSize(20);
-    text("Discard Count: " + discardCount, 10, 70)
+    text("Discard Count: " + discardCount, 10, 70);
 
     // Display the evaluated hand result on the screen
     textSize(24);
@@ -97,6 +97,16 @@ function draw() {
 
         card.draw(xOffset, yOffset, card.selected); // Pass the selected property to the draw function
     }
+    if (deck.isEmpty()) {
+        // If the deck is empty, display a message
+        textSize(24);
+        fill(255, 0, 0);
+        textAlign(CENTER, CENTER);
+        text("Deck is empty!", width / 2, height / 2);
+        replaceButton.hide();
+        submitButton.hide();
+    }
+
 }
 
 function replaceSelectedCards() {
@@ -106,7 +116,7 @@ function replaceSelectedCards() {
     for (let i = playerHand.length - 1; i >= 0; i--) {
         const card = playerHand[i];
         if (card.selected) {
-            playerHand.splice(i, 1, deck.deal()); // Replace selected card with a new card from the deck
+            playerHand[i] = deck.deal(); // Replace selected card with a new card from the deck
             card.selected = false; // Deselect the replaced card
         }
     }
@@ -114,7 +124,7 @@ function replaceSelectedCards() {
 }
 
 function toggleScoreboard() {
-    if (scoreboard == true) {
+    if (scoreboard) {
         // remove div
         scoreBoard.remove();
         scoreboard = false;
@@ -126,37 +136,33 @@ function toggleScoreboard() {
         scoreBoard.style('background-color', 'white');
         scoreboard = true;
 
-        // show scores for all hands and the amount of times the hand was dealt
-        const scoreText = `
-            Straight Flush: ${scoreCounter} x ${scoreBoard['Straight Flush'] || 0} <br>
-            Four of a Kind: ${scoreCounter} x ${scoreBoard['Four of a Kind'] || 0} <br>
-            Full House: ${scoreCounter} x ${scoreBoard['Full House'] || 0} <br>
-            Flush: ${scoreCounter} x ${scoreBoard['Flush'] || 0} <br>
-            Straight: ${scoreCounter} x ${scoreBoard['Straight'] || 0} <br>
-            Three of a Kind: ${scoreCounter} x ${scoreBoard['Three of a Kind'] || 0} <br>
-            Two Pairs: ${scoreCounter} x ${scoreBoard['Two Pairs'] || 0} <br>
-            One Pair: ${scoreCounter} x ${scoreBoard['One Pair'] || 0} <br>
-            High Card: ${scoreCounter} x ${scoreBoard['High Card'] || 0}
-        `;
-        scoreBoard.html(scoreText);
+        updateScoreboardText();
     }
 }
 
+function updateScoreboardText() {
+    // Show scores for all hands and the amount of times the hand was dealt
+    const scoreText = `
+        Straight Flush: ${scoreCounter} x ${getScoreCount('Straight Flush')} <br>
+        Four of a Kind: ${scoreCounter} x ${getScoreCount('Four of a Kind')} <br>
+        Full House: ${scoreCounter} x ${getScoreCount('Full House')} <br>
+        Flush: ${scoreCounter} x ${getScoreCount('Flush')} <br>
+        Straight: ${scoreCounter} x ${getScoreCount('Straight')} <br>
+        Three of a Kind: ${scoreCounter} x ${getScoreCount('Three of a Kind')} <br>
+        Two Pairs: ${scoreCounter} x ${getScoreCount('Two Pairs')} <br>
+        One Pair: ${scoreCounter} x ${getScoreCount('One Pair')} <br>
+        High Card: ${scoreCounter} x ${getScoreCount('High Card')}
+    `;
+    scoreBoard.html(scoreText);
+}
+
+function getScoreCount(handResult) {
+    return scoreBoardText[handResult] || 0;
+}
 
 function submitHand() {
-    submittedHand = [];
-    for (const card of playerHand) {
-        if (card.selected) {
-            submittedHand.push(card);
-        }
-    }
-    // Ensure the submitted hand contains a maximum of 5 cards
-    submittedHand = submittedHand.slice(0, 5);
-
-    // Clear selected cards
-    for (const card of playerHand) {
-        card.selected = false;
-    }
+    submittedHand = playerHand.filter(card => card.selected).slice(0, 5);
+    playerHand.forEach(card => (card.selected = false));
 
     console.log("Submitted Hand:", submittedHand);
 
@@ -176,7 +182,13 @@ function submitHand() {
     while (playerHand.length < 7) {
         playerHand.push(deck.deal());
     }
+
+    // Update the scoreboard if visible
+    if (scoreboard) {
+        updateScoreboardText();
+    }
 }
+
 
 function evaluateHand(hand) {
     // Sort the hand by card value (assuming the Card class has a numeric 'value' property)
@@ -265,8 +277,12 @@ function isFlush(hand) {
 
 function isStraight(hand) {
     // Check if the values of the cards form a sequence
-    const sortedValues = hand.map(card => card.value).sort((a, b) => a - b);
-    return sortedValues[4] - sortedValues[0] === 4 && new Set(sortedValues).size === 5;
+    // consider Aces as 1 or 14
+    const handValues = hand.map(card => card.value);
+    const sortedValues = handValues.sort((a, b) => a - b);
+    const isAceLowStraight = sortedValues[0] === 2 && sortedValues[1] === 3 && sortedValues[2] === 4 && sortedValues[3] === 5 && sortedValues[4] === 14;
+    const isAceHighStraight = sortedValues[0] === 10 && sortedValues[1] === 11 && sortedValues[2] === 12 && sortedValues[3] === 13 && sortedValues[4] === 14;
+    return sortedValues.every((value, index) => value === sortedValues[0] + index) || isAceLowStraight || isAceHighStraight;
 }
 
 function isThreeOfAKind(hand) {
