@@ -1,7 +1,19 @@
 class Card {
     constructor(name, value) {
         this.name = name;
-        this.value = value;
+        // this.value = value;
+        // if the value is J, Q, or K, set it to 10, 11, or 12
+        if (value == "J") {
+            this.value = 11;
+        } else if (value == "Q") {
+            this.value = 12;
+        } else if (value == "K") {
+            this.value = 13;
+        } else if (value == "A") {
+            this.value = 14 || 1;
+        } else {
+            this.value = value;
+        }
         this.selected = false; // Add a selected property to track if the card is selected
     }
 

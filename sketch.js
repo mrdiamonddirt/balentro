@@ -277,12 +277,11 @@ function isFlush(hand) {
 
 function isStraight(hand) {
     // Check if the values of the cards form a sequence
-    // consider Aces as 1 or 14
     const handValues = hand.map(card => card.value);
-    const sortedValues = handValues.sort((a, b) => a - b);
-    const isAceLowStraight = sortedValues[0] === 2 && sortedValues[1] === 3 && sortedValues[2] === 4 && sortedValues[3] === 5 && sortedValues[4] === 14;
-    const isAceHighStraight = sortedValues[0] === 10 && sortedValues[1] === 11 && sortedValues[2] === 12 && sortedValues[3] === 13 && sortedValues[4] === 14;
-    return sortedValues.every((value, index) => value === sortedValues[0] + index) || isAceLowStraight || isAceHighStraight;
+    const min = Math.min(...handValues);
+    const max = Math.max(...handValues);
+    return max - min === 4 && new Set(handValues).size === 5
+
 }
 
 function isThreeOfAKind(hand) {
