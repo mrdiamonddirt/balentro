@@ -278,6 +278,19 @@ function isFlush(hand) {
 function isStraight(hand) {
     // Check if the values of the cards form a sequence
     const handValues = hand.map(card => card.value);
+    if (handValues.includes(14)) {
+        console.log("Ace found in hand");
+        console.log(handValues);
+
+        console.log(handValues.includes("A"));
+        console.log(handValues.includes("2"));
+        console.log(handValues.includes("3"));
+        // Check if the hand is A, 2, 3, 4, 5
+        if (handValues.includes('2') && handValues.includes('3') && handValues.includes('4') && handValues.includes('5')) {
+            console.log("Ace low straight found");
+            return true;
+        }
+    }
     const min = Math.min(...handValues);
     const max = Math.max(...handValues);
     return max - min === 4 && new Set(handValues).size === 5
