@@ -99,12 +99,18 @@ function draw() {
     }
     if (deck.isEmpty()) {
         // If the deck is empty, display a message
-        textSize(24);
-        fill(255, 0, 0);
-        textAlign(CENTER, CENTER);
-        text("Deck is empty!", width / 2, height / 2);
-        replaceButton.hide();
-        submitButton.hide();
+        // textSize(24);
+        // fill(255, 0, 0);
+        // textAlign(CENTER, CENTER);
+        // text("Deck is empty!", width / 2, height / 2);
+        // replaceButton.hide();
+        // submitButton.hide();
+        // shuffle a new deck
+        console.log("Deck is empty!");
+        console.log("Shuffling a new deck...")
+        deck = new Deck();
+        deck.shuffle();
+        dealCards();
     }
 
 }
